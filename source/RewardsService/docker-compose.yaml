@@ -30,3 +30,10 @@ services:
     command: python load_mongo_data.py
     depends_on:
       - rewardsservice
+
+  unit_tests:
+    build: .
+    image: rewardsservice
+    command: python -m rewardsservice.test.runtests
+    depends_on:
+      - rewardsservice

@@ -1,5 +1,25 @@
 <html>
 <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="application/javascript">
+        jQuery(document).ready(function(e) {
+            jQuery('#order-form').submit(function (e) {
+                e.preventDefault();
+
+                jQuery.ajax({
+                    type: 'PUT',
+                    url: 'http://localhost:7050/customers',
+                    data: jQuery('#order-form').serializeArray(),
+                    success: function() {
+                        console.log('done');
+                        window.location.reload(true);
+                    }
+                });
+
+                return false;
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Welcome to the Rewards Dashboard</h1>
@@ -23,16 +43,17 @@
     </div>
     <div>
         <h2>Add orders</h2>
-        <form>
-            <label>Enter email address: </label><input type="text"/><br>
-            <label>Enter order total: </label><input type="text"/><input type="button" value="Submit Order"/>
+        <form id="order-form">
+            <label for="email">Enter email address: </label><input name="email" id="email" type="email" required/><br>
+            <label for="total">Enter order total: </label><input name="total" id="total" min="0" step="0.01" type="number" required/>
+            <input type="submit" id="submit-order" value="Submit Order"/>
         </form>
         <hr>
     </div>
     <div>
         <h2>User Rewards</h2>
-        <form>
-            <label>Email address: </label><input type="text"/><input type="button" value="Search"/>
+        <form method="get">
+            <label for="search">Email address: </label><input id="search" name="s" value="{{ search_term }}" type="text"/><input type="submit" value="Search"/>
         </form>
         <table border="1">
             <thead>
@@ -47,15 +68,17 @@
             </tr>
             </thead>
             <tbody>
+            {% for customer in customers_data %}
                 <tr>
-                    <td>customer01@gmail.com</td>
-                    <td>100</td>
-                    <td>A</td>
-                    <td>5% off purchase</td>
-                    <td>B</td>
-                    <td>10% off purchase</td>
-                    <td>50%</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.points }}</td>
+                    <td>{{ customer.tier }}</td>
+                    <td>{{ customer.rewardName }}</td>
+                    <td>{{ customer.nextTier }}</td>
+                    <td>{{ customer.nextRewardName }}</td>
+                    <td>{{ customer.nextTierProgress }}</td>
                 </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>

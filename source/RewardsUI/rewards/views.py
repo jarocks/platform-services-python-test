@@ -17,6 +17,12 @@ class RewardsView(TemplateView):
         response = requests.get("http://rewardsservice:7050/rewards")
         context['rewards_data'] = response.json()
 
+        search = request.GET.get('s', '')
+        context['search_term'] = search
+
+        response = requests.get("http://rewardsservice:7050/customers?s=%s" % search)
+        context['customers_data'] = response.json()
+
         return TemplateResponse(
             request,
             self.template_name,
